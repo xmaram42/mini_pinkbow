@@ -1,40 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 14:26:19 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/30 21:09:23 by maram            ###   ########.fr       */
+/*   Created: 2025/08/25 18:04:39 by maram             #+#    #+#             */
+/*   Updated: 2025/08/25 18:05:06 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	sigint_handler(int sig)
+int exec_pwd(char **av)
 {
-	(void)sig;
-	write(1, "\n", 1);
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
-}
-
-void	setup_signals(void)
-{
-	struct sigaction	sa;
-
-	sa.sa_handler = sigint_handler;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
-	sigaction(SIGINT, &sa, NULL);
-	signal(SIGQUIT, SIG_IGN);
-}
-
-void	sigint_heredoc_handler(int sig)
-{
-	(void)sig;
-	write(1, "\n", 1);
-	exit(130);
+    char *cwd;
+    
+    if(av[1] != NULL)
+    {
+        if(av[1][0] == '-')
+        {
+            ft_putstr_fd("minishell: pwd: ", 2);
+            ft_putstr_fd(av[1], 2);
+            ft_putstr_fd(": invalid option\n", 2);
+        }
+    }
+    cwd = getcwd(NULL, 0);
+    if(cwd == NULL)
+    {
+        perror("minishell: pwd");
+        return 1;
+    }
+    printf("%s\n", cwd);
+    free(cwd);
+    return 0;
 }

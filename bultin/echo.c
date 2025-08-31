@@ -1,40 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 14:26:19 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/30 21:09:23 by maram            ###   ########.fr       */
+/*   Created: 2025/08/10 20:45:48 by maram             #+#    #+#             */
+/*   Updated: 2025/08/30 21:03:40 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	sigint_handler(int sig)
+static int	check_n_flag(char *arg)
 {
-	(void)sig;
-	write(1, "\n", 1);
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
+	int	j;
+
+	if (!arg || arg[0] != '-')
+		return (0);
+	j = 1;
+	while (arg[j] == 'n')
+		j++;
+	return (arg[j] == '\0' && j >= 1);
 }
 
-void	setup_signals(void)
+int	exec_echo(char **av)
 {
-	struct sigaction	sa;
+	int	i;
+	int	newline;
 
-	sa.sa_handler = sigint_handler;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
-	sigaction(SIGINT, &sa, NULL);
-	signal(SIGQUIT, SIG_IGN);
-}
-
-void	sigint_heredoc_handler(int sig)
-{
-	(void)sig;
-	write(1, "\n", 1);
-	exit(130);
+	i = 1;
+	newline = 1;
+	if (av[i] && check_n_flag(av[i]))
+	{
+		newline = 0;
+		i++;
+	}
+	while (av[i])
+	{
+		printf("%s", av[i]);
+		if (av[i + 1])
+			printf(" ");
+		i++;
+	}
+	if (newline)
+		printf("\n");
+	return (0);
 }
