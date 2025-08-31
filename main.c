@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:29:10 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/31 11:45:13 by maram            ###   ########.fr       */
+/*   Updated: 2025/08/31 13:31:18 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,22 @@
 void	update_shell_level(t_shell *shell)
 {
 	char	*new_shlvl;
-
-	// Always start from 1 for minishell, regardless of inherited value
-	// This ensures minishell starts fresh every time
-	new_shlvl = ft_itoa(1);
-	if (new_shlvl)
+    char *old;
+    int lvl;
+    
+    old = get_var_value("SHLVL", shell);
+	if (!old)
+		lvl = 0;
+	else
 	{
-		update_env_var("SHLVL", new_shlvl, shell);
-		free(new_shlvl);
+        lvl = ft_atoi(old);
+		free(old);
 	}
+	new_shlvl = ft_itoa(lvl + 1);
+	if (!new_shlvl)
+		return ;
+	update_env_var("SHLVL", new_shlvl, shell);
+	free(new_shlvl);
 }
 
 char	**dup_envp(char **src)
@@ -105,9 +112,7 @@ int main(int ac, char **av, char **envp)
     }
     shell.exit_code = 0;
     shell.exp = NULL;                               // your expander state (if any)
-    
-	// Update SHLVL (shell level)
-	update_shell_level(&shell);
+
 
     while (1)
     {

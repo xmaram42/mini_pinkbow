@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:26:46 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/30 12:33:30 by maram            ###   ########.fr       */
+/*   Updated: 2025/08/31 13:31:54 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,7 +264,7 @@ int	find_key(char **envp, char *name);
 char	**append_env(char **envp, char *entry); //0
 void	update_env_var(char *name, char *value, t_shell *shell);
 void	cd_perror(char *path);
-
+void	update_shell_level(t_shell *shell);
 
 void	print_decl(char *e);
 // ------------------------------------------------------------------------------------------------------

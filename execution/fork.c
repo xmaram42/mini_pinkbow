@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ashaheen <ashaheen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:30:31 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/23 15:06:13 by ashaheen         ###   ########.fr       */
+/*   Updated: 2025/08/31 13:29:21 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <errno.h>
+
+
 void xdup2(int oldfd, int newfd, t_exec *exec)
 {
 	if (dup2(oldfd, newfd) == -1)
@@ -80,6 +82,23 @@ int ft_isspace(int c)
             c == '\v' || c == '\f' || c == '\r');
 }
 
+static void increment_shlvl(t_shell *shell)
+{
+    char    *old;
+    char    *new;
+    int             lvl;
+
+    old = get_var_value("SHLVL", shell);
+    if (!old)
+        return ;
+    lvl = ft_atoi(old);
+    free(old);
+    new = ft_itoa(lvl + 1);
+    if (!new)
+        return ;
+    update_env_var("SHLVL", new, shell);
+    free(new);
+}
 void    run_child(t_cmd *cmd, t_exec *exec, t_shell *shell, int i)
 {
     char    *path;
@@ -101,6 +120,7 @@ void    run_child(t_cmd *cmd, t_exec *exec, t_shell *shell, int i)
     // }
     if (!cmd->argv || !cmd->argv[0])
         exit(0);
+    increment_shlvl(shell);
         /* Check if command is all whitespace */
     while (cmd->argv[0][j]) //---
     {
@@ -138,8 +158,10 @@ void    run_child(t_cmd *cmd, t_exec *exec, t_shell *shell, int i)
         }
         exit(127);
     }
-    if(is_child_builtin(cmd->argv[0]))
+        if(is_child_builtin(cmd->argv[0]))
         exit(exec_builtin_in_child(cmd, shell));
+        // Bump SHLVL for external commands
+        update_shell_level(shell);
     path = get_cmd_path(cmd->argv[0], shell, exec, exec->cmd_head);
     if (execve(path, cmd->argv, shell->envp) == -1)
     {
