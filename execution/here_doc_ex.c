@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc_ex.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ashaheen <ashaheen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 14:27:52 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/09 14:49:00 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/09/01 17:43:20 by ashaheen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	read_heredoc_input(int write_fd, char *limiter, int quoted, t_shell *shell)
 		}
 	}
 	close(write_fd);
-	exit(0);
+	//exit(0);
 }
 
 int	handle_here_doc(t_heredoc *hdoc, t_shell *shell, t_cmd *cmd_list)
@@ -92,16 +92,27 @@ int	handle_here_doc(t_heredoc *hdoc, t_shell *shell, t_cmd *cmd_list)
 	pid = fork();
 	if (pid < 0)
 		error_exit("fork", NULL, cmd_list, 1);
-	if (pid == 0)
+        if (pid == 0)
 	{
 		close(pipe_fd[0]);
 		read_heredoc_input(pipe_fd[1], hdoc->limiter, hdoc->quoted, shell);
+		free_envp(shell->envp);
+		free_cmd_list(cmd_list);
+		exit(0);
 	}
 	else
 	{
 		close(pipe_fd[1]);
-		waitpid(pid, &status, 0);
-		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		while (waitpid(pid, &status, 0) == -1)
+		{
+			if (errno != EINTR)
+			{
+				close(pipe_fd[0]);
+				return (-1);
+			}
+		}
+		if ((WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+			|| (WIFEXITED(status) && WEXITSTATUS(status) == 1))
 		{
 			close(pipe_fd[0]);
 			return (-1); // signal parent to cancel pipeline
@@ -111,36 +122,47 @@ int	handle_here_doc(t_heredoc *hdoc, t_shell *shell, t_cmd *cmd_list)
 	return (-1); // fallback
 }
 
-void	process_all_heredocs(t_cmd *cmd, t_shell *shell)
-{
-	int	i;
-	int	fd;
 
-	i = 0;
-	while (i < cmd->n_heredocs)
-	{
-		fd = handle_here_doc(&cmd->heredocs[i], shell, cmd);
-		if (fd == -1)
-		{
-			shell->exit_code = 130;
-			return ;
-		}
-		if (cmd->infile != -1)
-			close(cmd->infile);
-		cmd->infile = fd;
-		i++;
-	}
+int	process_all_heredocs(t_cmd *cmd, t_cmd *cmd_list_head, t_shell *shell)
+{
+int		i;
+int		fd;
+
+i = 0;
+while (i < cmd->n_heredocs)
+{
+	fd = handle_here_doc(&cmd->heredocs[i], shell, cmd_list_head);
+if (fd == -1)
+{
+	shell->exit_code = 1;
+    if (cmd->infile != -1)
+    {
+        close(cmd->infile);
+        cmd->infile = -1;
+    }
+    return (1);
+}
+if (cmd->infile != -1)
+	close(cmd->infile);
+cmd->infile = fd;
+i++;
+}
+return (0);
 }
 
-void handle_all_heredocs(t_cmd *cmd_list, t_shell *shell)
+int handle_all_heredocs(t_cmd *cmd_list, t_shell *shell)
 {
-	t_cmd	*cmd;
-	
-	cmd = cmd_list;
-	while (cmd)
-    {
-        if (cmd->n_heredocs > 0)
-            process_all_heredocs(cmd, shell);
-        cmd = cmd->next;
-    }
+t_cmd	*cmd;
+
+cmd = cmd_list;
+while (cmd)
+{
+if (cmd->n_heredocs > 0)
+{
+	if (process_all_heredocs(cmd, cmd_list, shell))
+		return (1);
+}
+cmd = cmd->next;
+}
+return (0);
 }

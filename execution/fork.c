@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ashaheen <ashaheen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:30:31 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/31 13:29:21 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/09/01 19:41:33 by ashaheen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <errno.h>
-
-
 void xdup2(int oldfd, int newfd, t_exec *exec)
 {
 	if (dup2(oldfd, newfd) == -1)
@@ -39,8 +37,16 @@ void    close_pipe_files_child(t_exec *exec, t_cmd *cmd)
     j = 0;
     while (j < exec->cmd_count - 1)
     {
-        close(exec->pipes[j][0]);
-        close(exec->pipes[j][1]);
+        if (exec->pipes[j][0] != -1)
+        {
+            close(exec->pipes[j][0]);
+            exec->pipes[j][0] = -1;
+        }
+        if (exec->pipes[j][1] != -1)
+        {
+            close(exec->pipes[j][1]);
+            exec->pipes[j][1] = -1;
+        }
         j++;
     }
     if(cmd->infile != -1)
@@ -82,23 +88,6 @@ int ft_isspace(int c)
             c == '\v' || c == '\f' || c == '\r');
 }
 
-static void increment_shlvl(t_shell *shell)
-{
-    char    *old;
-    char    *new;
-    int             lvl;
-
-    old = get_var_value("SHLVL", shell);
-    if (!old)
-        return ;
-    lvl = ft_atoi(old);
-    free(old);
-    new = ft_itoa(lvl + 1);
-    if (!new)
-        return ;
-    update_env_var("SHLVL", new, shell);
-    free(new);
-}
 void    run_child(t_cmd *cmd, t_exec *exec, t_shell *shell, int i)
 {
     char    *path;
@@ -107,7 +96,7 @@ void    run_child(t_cmd *cmd, t_exec *exec, t_shell *shell, int i)
     int     j = 0; //---
 
     if (cmd->redir_error)
-        exit(1);
+        exit_child(exec, exec->cmd_head, 1);
     signal(SIGINT, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
     setup_io(cmd, exec, i);
@@ -120,7 +109,6 @@ void    run_child(t_cmd *cmd, t_exec *exec, t_shell *shell, int i)
     // }
     if (!cmd->argv || !cmd->argv[0])
         exit(0);
-    increment_shlvl(shell);
         /* Check if command is all whitespace */
     while (cmd->argv[0][j]) //---
     {
@@ -136,7 +124,7 @@ void    run_child(t_cmd *cmd, t_exec *exec, t_shell *shell, int i)
         ft_putstr_fd("minishell: ", 2);
         ft_putstr_fd(cmd->argv[0], 2);
         ft_putstr_fd(": command not found\n", 2);
-        exit(127);
+        exit_child(exec, exec->cmd_head, 127);
     }
     // Handle variable expansion as command
     if (cmd->argv[0][0] == '$')
@@ -156,12 +144,10 @@ void    run_child(t_cmd *cmd, t_exec *exec, t_shell *shell, int i)
             ft_putstr_fd(cmd->argv[0], 2);
             ft_putstr_fd(": unbound variable\n", 2);
         }
-        exit(127);
+        exit_child(exec, exec->cmd_head, 127);
     }
-        if(is_child_builtin(cmd->argv[0]))
-        exit(exec_builtin_in_child(cmd, shell));
-        // Bump SHLVL for external commands
-        update_shell_level(shell);
+    if(is_child_builtin(cmd->argv[0]))
+        exit_child(exec, exec->cmd_head, exec_builtin_in_child(cmd, shell));
     path = get_cmd_path(cmd->argv[0], shell, exec, exec->cmd_head);
     if (execve(path, cmd->argv, shell->envp) == -1)
     {
@@ -178,7 +164,7 @@ void    run_child(t_cmd *cmd, t_exec *exec, t_shell *shell, int i)
             exit_code = 126;
         }
         free(path);
-        exit(exit_code);
+        error_exit(cmd->argv[0], exec, exec->cmd_head, exit_code);
     }
     free(path);
 }
@@ -197,6 +183,16 @@ void fork_and_execute_all(t_cmd *cmd_list, t_exec *exec, t_shell *shell)
             error_exit("fork", exec, exec->cmd_head, 1);
         if (exec->pids[i] == 0)
             run_child(cmd, exec, shell, i);
+        if (cmd->infile != -1)
+        {
+            close(cmd->infile);
+            cmd->infile = -1;
+        }
+        if (cmd->outfile != -1)
+        {
+            close(cmd->outfile);
+            cmd->outfile = -1;
+        }
         cmd = cmd->next;
         i++;
     }

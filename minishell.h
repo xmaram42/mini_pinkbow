@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ashaheen <ashaheen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:26:46 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/31 13:31:54 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/08/31 13:54:18 by ashaheen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@ char    *get_var_value(char *var_name, t_shell *shell);
 //expan_utils
 char *append_str(char *str, char *suffix);
 char *append_char(char *str, char c);
-void    remove_empty_tokens(t_token **head);
+int     remove_empty_tokens(t_token **head, t_shell *shell);
 
 //handle signales
 void    rl_replace_line(const char *text, int clear_undo);
@@ -183,8 +183,8 @@ void wait_all_children(t_exec *exec, t_shell *shell);
 int exec_builtin_in_child(t_cmd *cmd, t_shell *shell);
 
 //heredoc
-void handle_all_heredocs(t_cmd *cmd_list, t_shell *shell);
-void	process_all_heredocs(t_cmd *cmd, t_shell *shell);
+int handle_all_heredocs(t_cmd *cmd_list, t_shell *shell);
+int process_all_heredocs(t_cmd *cmd, t_cmd *cmd_list_head, t_shell *shell);
 int	handle_here_doc(t_heredoc *hdoc, t_shell *shell, t_cmd *cmd_list);
 void	read_heredoc_input(int write_fd, char *limiter, int quoted, t_shell *shell);
 char	*expand_line_heredoc(char *line, t_shell *shell);
@@ -209,6 +209,7 @@ void xdup2(int oldfd, int newfd, t_exec *exec);
 void error_exit(char *msg, t_exec *exec, t_cmd *cmd_list, int exit_code);
 void	free_cmd_list(t_cmd *cmd_list);
 void	free_exec_data(t_exec *exec);
+void exit_child(t_exec *exec, t_cmd *cmd_list, int exit_code);
 
 //----------------------------------BULTIN----------------------------------------------------
 
@@ -224,6 +225,7 @@ int exec_env(char **av, t_shell *shell);
 char *get_env_value(char *name, t_shell *shell);
 int  env_count(char **env);
 void    free_envp(char **env);
+void    init_shlvl(char ***penvp);
 
 //------PARENT------------
 // exit
@@ -264,7 +266,7 @@ int	find_key(char **envp, char *name);
 char	**append_env(char **envp, char *entry); //0
 void	update_env_var(char *name, char *value, t_shell *shell);
 void	cd_perror(char *path);
-void	update_shell_level(t_shell *shell);
+
 
 void	print_decl(char *e);
 // ------------------------------------------------------------------------------------------------------

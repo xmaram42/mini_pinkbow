@@ -6,7 +6,7 @@
 /*   By: ashaheen <ashaheen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:51:20 by maabdulr          #+#    #+#             */
-/*   Updated: 2025/08/23 19:12:25 by ashaheen         ###   ########.fr       */
+/*   Updated: 2025/08/31 13:09:41 by ashaheen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,17 +120,19 @@ void execute_pipeline(t_cmd *cmd_list, t_shell *shell)
 
     if (!cmd_list)
         {return;}
-	handle_all_heredocs(cmd_list, shell);
-    if (shell->exit_code == 130)
+    if (handle_all_heredocs(cmd_list, shell))
         {return;}
 	if (cmd_list && cmd_list->next == NULL
         && cmd_list->argv && is_parent_builtin(cmd_list->argv[0]))
-	    {
-            shell->exit_code = exec_builtin_in_parent(cmd_list, shell);
-            return;
-        }
+	{
+        shell->exit_code = exec_builtin_in_parent(cmd_list, shell);
+        return;
+    }
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
     exec = init_exec_struct(cmd_list, shell);
     fork_and_execute_all(cmd_list, exec, shell);
     wait_all_children(exec, shell);
     free_exec_data(exec);
+    setup_signals();
 }

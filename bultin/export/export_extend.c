@@ -6,13 +6,13 @@
 /*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:40:08 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/31 10:30:26 by maram            ###   ########.fr       */
+/*   Updated: 2025/08/30 12:28:18 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	print_escaped_value_fd(int fd, const char *s)
+void    print_escaped_value_fd(int fd, const char *s)
 {
 	int	i;
 
@@ -22,27 +22,28 @@ void	print_escaped_value_fd(int fd, const char *s)
 	while (s[i])
 	{
 		if (s[i] == '"' || s[i] == '\\' || s[i] == '$')
-			ft_putchar_fd('\\', fd);
+				ft_putchar_fd('\\', fd);
 		ft_putchar_fd(s[i], fd);
 		i++;
-	}
+	}	
 }
 
-int	cmp_env_names(char *a, char *b)
+// Compare "NAME" parts of "NAME=VALUE" strings
+int cmp_env_names(char *a, char *b)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	while (a[i] && a[i] != '=' && b[i] && b[i] != '=')
 	{
-		if ((unsigned char)a[i] != (unsigned char)b[i])
-			return ((unsigned char)a[i] - (unsigned char)b[i]);
+        if ((unsigned char)a[i] != (unsigned char)b[i])
+            return ((unsigned char)a[i] - (unsigned char)b[i]);
 		i++;
 	}
 	if (a[i] == '=' || a[i] == '\0')
 	{
 		if (b[i] == '=' || b[i] == '\0')
-			return (0);
+				return (0);
 		return (-1);
 	}
 	if (b[i] == '=' || b[i] == '\0')
@@ -125,4 +126,20 @@ void	print_decl(char *e)
 		ft_putchar_fd('\n', 1);
 }
 
+// void	export_print(char **envp, char **exp)
+// {
+// 	char	**copy;
+// 	int		i;
 
+// 	copy = join_env_and_exp(envp, exp);
+// 	if (!copy)
+// 		return ;
+// 	sort_env_ptrs(copy);
+// 	i = 0;
+// 	while (copy[i])
+// 	{
+// 		print_decl(copy[i]);
+// 		i++;
+// 	}
+// 	free(copy);
+// }

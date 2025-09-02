@@ -6,15 +6,16 @@
 /*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:54:20 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/31 10:30:58 by maram            ###   ########.fr       */
+/*   Updated: 2025/08/30 12:41:22 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	parse_export_arg(char *arg, char **name, char **value, int *has_eq)
+//1
+int parse_export_arg(char *arg, char **name, char **value, int *has_eq)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	*name = NULL;
@@ -41,25 +42,51 @@ int	parse_export_arg(char *arg, char **name, char **value, int *has_eq)
 	return (0);
 }
 
-char	*make_env_pair(char *name, char *value)
+char *make_env_pair(char *name, char *value)
 {
-	char	*tmp;
-	char	*pair;
+    char    *tmp;
+    char    *pair;
 
-	tmp = NULL;
-	pair = NULL;
+    tmp = NULL;
+    pair = NULL;
 	if (!value)
-		return (ft_strdup(name));
-	tmp = ft_strjoin(name, "=");
-	if (!tmp)
-		return (NULL);
-	pair = ft_strjoin(tmp, value);
-	free(tmp);
-	if (!pair)
-		return (NULL);
-	return (pair);
+        return (ft_strdup(name));
+    tmp = ft_strjoin(name, "=");
+    if (!tmp)
+        return (NULL);
+    pair = ft_strjoin(tmp, value);
+    free(tmp);
+    if (!pair)
+        return (NULL);
+    return (pair);
 }
+/* helper: append PAIR to *penvp (realloc array by +1) */
+// static int	v(char ***penvp, char *pair) //new
+// {
+// 	char	**old;
+// 	char	**newv;
+// 	int		n;
+// 	int		i;
 
+// 	old = *penvp;
+// 	n = 0;
+// 	while (old && old[n])
+// 		n++;
+// 	newv = (char **)malloc(sizeof(char *) * (n + 2));
+// 	if (!newv)
+// 		return (1);
+// 	i = 0;
+// 	while (i < n)
+// 	{
+// 		newv[i] = old[i];
+// 		i++;
+// 	}
+// 	newv[n] = pair;
+// 	newv[n + 1] = NULL;
+// 	free(old);
+// 	*penvp = newv;
+// 	return (0);
+// }
 
 /* minishell.h already has:
 ** char **append_env(char **envp, char *entry);

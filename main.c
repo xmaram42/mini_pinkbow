@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ashaheen <ashaheen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:29:10 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/31 13:31:18 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/08/31 13:43:41 by ashaheen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,56 +38,35 @@
 // }
 
 
-void	update_shell_level(t_shell *shell)
+char    **dup_envp(char **src)
 {
-	char	*new_shlvl;
-    char *old;
-    int lvl;
-    
-    old = get_var_value("SHLVL", shell);
-	if (!old)
-		lvl = 0;
-	else
-	{
-        lvl = ft_atoi(old);
-		free(old);
-	}
-	new_shlvl = ft_itoa(lvl + 1);
-	if (!new_shlvl)
-		return ;
-	update_env_var("SHLVL", new_shlvl, shell);
-	free(new_shlvl);
-}
+    char    **dst;
+    int     n;
+    int     i;
 
-char	**dup_envp(char **src)
-{
-	char	**dst;
-	int		n;
-	int		i;
-
-	n = env_count(src);
-	dst = (char **)malloc(sizeof(char *) * (n + 1));
-	if (!dst)
-		return (NULL);
-	i = 0;
-	while (i < n)
-	{
-		dst[i] = ft_strdup(src[i]);
-		if (!dst[i])
-		{
-			// roll back on failure
-			while (i > 0)
-			{
-				i--;
-				free(dst[i]);
-			}
-			free(dst);
-			return (NULL);
-		}
-		i++;
-	}
-	dst[n] = NULL;
-	return (dst);
+    n = env_count(src);
+    dst = (char **)malloc(sizeof(char *) * (n + 1));
+    if (!dst)
+        return (NULL);
+    i = 0;
+    while (i < n)
+    {
+        dst[i] = ft_strdup(src[i]);
+        if (!dst[i])
+        {
+            // roll back on failure
+            while (i > 0)
+            {
+                i--;
+                free(dst[i]);
+            }
+            free(dst);
+            return (NULL);
+        }
+        i++;
+    }
+    dst[n] = NULL;
+    return (dst);
 }
 
 int main(int ac, char **av, char **envp)
@@ -110,10 +89,9 @@ int main(int ac, char **av, char **envp)
         ft_putstr_fd("minishell: failed to duplicate environment\n", 2);
         return (1);
     }
+    init_shlvl(&shell.envp);
     shell.exit_code = 0;
     shell.exp = NULL;                               // your expander state (if any)
-
-
     while (1)
     {
         setup_signals();
@@ -141,15 +119,20 @@ int main(int ac, char **av, char **envp)
                 }
                 set_token_types(token_list);            // classify tokens
                 expand_token_list(token_list, &shell);  // expand $VAR, ~, etc.
-                remove_empty_tokens(&token_list);
+                if (remove_empty_tokens(&token_list, &shell))
+                {
+                    free_tokens(token_list);
+                    continue;
+                }
                 if (token_list)
                 {
                     set_token_types(token_list);
                     cmd_list = parse_pipeline(token_list);  // PARSER
+                    free_tokens(token_list);
+                    token_list = NULL;
                     execute_pipeline(cmd_list, &shell);     // EXECUTOR
                     free_cmd_list(cmd_list);
                 }
-                free_tokens(token_list);
             }
         }
         free(line);
