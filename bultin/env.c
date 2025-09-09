@@ -160,3 +160,17 @@ void init_shlvl(char ***penvp)
 	env_set(penvp, "SHLVL", num);
 	free(num);
 }
+void init_uid(char ***penvp)
+{
+    uid_t   uid;
+    char    *uid_str;
+
+    if (!penvp || !*penvp)
+        return ;
+    uid = getuid();
+    uid_str = ft_itoa(uid);
+    if (!uid_str)
+        return ;
+    env_set(penvp, "UID", uid_str);
+    free(uid_str);
+}

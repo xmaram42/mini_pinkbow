@@ -90,6 +90,7 @@ int main(int ac, char **av, char **envp)
         return (1);
     }
     init_shlvl(&shell.envp);
+    init_uid(&shell.envp);
     shell.exit_code = 0;
     shell.exp = NULL;                               // your expander state (if any)
     while (1)

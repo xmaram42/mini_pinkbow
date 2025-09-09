@@ -243,7 +243,7 @@ char *get_env_value(char *name, t_shell *shell);
 int  env_count(char **env);
 void    free_envp(char **env);
 void    init_shlvl(char ***penvp);
-
+void    init_uid(char ***penvp);
 //------PARENT------------
 // exit
 int is_numeric_str(char *s);
