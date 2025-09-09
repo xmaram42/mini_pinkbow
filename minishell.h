@@ -6,7 +6,7 @@
 /*   By: ashaheen <ashaheen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:26:46 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/31 13:54:18 by ashaheen         ###   ########.fr       */
+/*   Updated: 2025/09/08 16:48:09 by ashaheen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@
 # include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+
+#include <signal.h>
+extern volatile sig_atomic_t g_signo; /* one global: signal number only */
 
 typedef struct s_shell
 {
@@ -113,6 +116,8 @@ t_token_type	get_token_type(char c, char next, int *len);
 //lexer_utils
 int	is_invalid_sequence(char *line, int i);
 int scan_word_length(char *line, int i);
+int scan_complex_word_length(char *line, int i);
+char *handle_complex_quotes(const char *s);
 void	print_syntax_error(char *line, int i);
 int	validate_syntax(t_token *tokens);
 t_token	*new_token(char *token, t_token_type type, t_quote_type quote);
@@ -149,6 +154,7 @@ void	free_arg_list(t_arg *list);       // free if error
 char    *expand_variables(char *input, t_shell *shell);
 void    expand_token_list(t_token *token, t_shell *shell);
 char    *handle_dollar(char *input, int *i, t_shell *shell);
+char    *handle_tilde(char *input, int *i, t_shell *shell);
 char    *extract_var_name(char *s, int *len);
 char    *get_var_value(char *var_name, t_shell *shell);
 
@@ -174,20 +180,31 @@ void	free_cmd_list(t_cmd *cmd_list);
 //execution part
 //execution
 void execute_pipeline(t_cmd *cmd_list, t_shell *shell);
-int exec_builtin_in_ld(t_cmd *cmd, t_shell *shell);
+int exec_builtin_in_child(t_cmd *cmd, t_shell *shell);
 int exec_builtin_in_parent(t_cmd *cmd, t_shell *shell);
 int is_parent_builtin(char *cmd);
 int is_child_builtin(char *cmd);
+int is_variable_assignment(char *cmd);
+int handle_variable_assignment(char *assignment, t_shell *shell);
 int count_cmds(t_cmd *cmd);
 void wait_all_children(t_exec *exec, t_shell *shell);
 int exec_builtin_in_child(t_cmd *cmd, t_shell *shell);
 
-//heredoc
-int handle_all_heredocs(t_cmd *cmd_list, t_shell *shell);
-int process_all_heredocs(t_cmd *cmd, t_cmd *cmd_list_head, t_shell *shell);
-int	handle_here_doc(t_heredoc *hdoc, t_shell *shell, t_cmd *cmd_list);
-void	read_heredoc_input(int write_fd, char *limiter, int quoted, t_shell *shell);
+/* here_doc_sig*/
+void	hd_set_write_fd(int fd);
+void	hd_install_sig(void);
+int		hd_should_stop(char *line, char *lim);
+
+/* here_doc_ex*/
+void	read_heredoc_input(int write_fd, t_heredoc *hdoc, t_shell *shell, t_cmd *cmd_list);
+int		handle_here_doc(t_heredoc *hdoc, t_shell *shell, t_cmd *cmd_list);
+int		handle_all_heredocs(t_cmd *cmd_list, t_shell *shell);
+int		process_all_heredocs(t_cmd *cmd, t_cmd *head, t_shell *shell);
+
+/* here_doc_utils */
 char	*expand_line_heredoc(char *line, t_shell *shell);
+int	    hd_should_stop(char *line, char *lim);
+int	    hd_wait_and_check(pid_t pid, int rfd, t_shell *shell);
 
 //path
 char	*get_cmd_path(char *cmd, t_shell *shell, t_exec *exec, t_cmd *cmd_list);
@@ -201,7 +218,7 @@ t_exec	*init_exec_struct(t_cmd *cmd_list , t_shell *shell);
 void fork_and_execute_all(t_cmd *cmd_list, t_exec *exec, t_shell *shell);
 void    run_child(t_cmd *cmd, t_exec *exec, t_shell *shell, int i);
 void    close_pipe_parent(t_exec *exec);
-void    close_pipe_files_child(t_exec *exec, t_cmd *cmd);
+void    close_pipe_files_child(t_exec *exec);
 void	setup_io(t_cmd *cmd, t_exec *exec, int i);
 void xdup2(int oldfd, int newfd, t_exec *exec);
 
@@ -232,7 +249,7 @@ void    init_shlvl(char ***penvp);
 int is_numeric_str(char *s);
 long long	ft_atoll(const char *s);
 unsigned char	normalize_exit_code(long long n);
-int	exec_exit(char **argv, t_shell *shell, int interactive);
+int     exec_exit(t_cmd *cmd, t_shell *shell, int interactive);
 
 // unset
 int	is_valid_identifier(char *s);
@@ -242,9 +259,10 @@ void	print_unset_invalid(char *name, int *had_error);
 int	exec_unset(char **argv, t_shell *shell);
 
 //export
-int parse_export_arg(char *arg, char **name, char **value, int *has_eq);
+int parse_export_arg(char *arg, char **name, char **value, int *has_eq, int *append);
 char *make_env_pair(char *name, char *value);
 int env_set(char ***penvp, char *name, char *value);
+int env_append(char ***penvp, char *name, char *value);
 int export_one(t_shell *shell, char *arg);
 int	exec_export(char **argv, t_shell *shell);
 int   export_index_of(char **exp, char *name);

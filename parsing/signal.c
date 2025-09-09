@@ -6,11 +6,13 @@
 /*   By: ashaheen <ashaheen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:26:19 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/08/31 11:59:11 by ashaheen         ###   ########.fr       */
+/*   Updated: 2025/09/05 14:58:45 by ashaheen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+volatile sig_atomic_t g_signo = 0;
 
 void    sigint_handler(int sig)
 {
@@ -33,9 +35,9 @@ void    setup_signals(void)
     signal(SIGQUIT, SIG_IGN);
 }
 
-void	sigint_heredoc_handler(int sig)
-{
-	(void)sig;
-	write(1, "\n", 1);
-	exit(1);
-}
+// void	sigint_heredoc_handler(int sig)
+// {
+// 	(void)sig;
+// 	write(1, "\n", 1);
+// 	exit(1);
+// }
