@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ashaheen <ashaheen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:26:46 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/09/08 16:48:09 by ashaheen         ###   ########.fr       */
+/*   Updated: 2025/09/09 18:14:00 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ t_token_type	get_token_type(char c, char next, int *len);
 int	is_invalid_sequence(char *line, int i);
 int scan_word_length(char *line, int i);
 int scan_complex_word_length(char *line, int i);
-char *handle_complex_quotes(const char *s);
+// char *handle_complex_quotes(const char *s);
 void	print_syntax_error(char *line, int i);
 int	validate_syntax(t_token *tokens);
 t_token	*new_token(char *token, t_token_type type, t_quote_type quote);

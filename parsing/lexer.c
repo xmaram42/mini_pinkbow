@@ -6,7 +6,7 @@
 /*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 17:27:35 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/09/06 23:37:41 by maram            ###   ########.fr       */
+/*   Updated: 2025/09/09 18:17:28 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,20 +44,18 @@ t_token_type	get_token_type(char c, char next, int *len)
 
 char	*get_word(char *line, int i, int *len, t_quote_type *quote)
 {
-	char	*raw;
 	char	*word;
 
-	*quote = NO_QUOTE;
-	if (line[i] == '\'')
-		*quote = SINGLE_QUOTE;
-	else if (line[i] == '"')
-		*quote = DOUBLE_QUOTE;
+
 	*len = scan_complex_word_length(line, i);
-	raw = ft_substr(line, i, *len);
-	if (!raw)
-		return (NULL);
-	word = handle_complex_quotes(raw);
-	free(raw);
+	if (*len >= 2 && line[i] == '\'' && line[i + *len - 1] == '\'')
+		*quote = SINGLE_QUOTE;
+	else if (*len >= 2 && line[i] == '"' && line[i + *len - 1] == '"')
+		*quote = DOUBLE_QUOTE;
+	else
+		*quote = NO_QUOTE;
+	word = ft_substr(line, i, *len);
+	return (word);
 	return (word);
 }
 
