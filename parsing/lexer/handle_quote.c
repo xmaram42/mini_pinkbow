@@ -23,16 +23,20 @@ int	handle_dollar_quote(const char *s, int *i, char *rs, int *k)
 int	handle_plain_quote(const char *s, int *i, char *rs, int *k)
 {
 	char	q;
+	char	marker;
 
-	if (s[*i] == '\'' || s[*i] == '"')
+	if (s[*i] == '\'' || s[*i] == '\"')
 	{
 		q = s[(*i)++];
+		marker = (q == '\'') ? '\x02' : '\x03';
+		rs[(*k)++] = marker;
 		while (s[*i] && s[*i] != q)
 			rs[(*k)++] = s[(*i)++];
 		if (s[*i] == q)
+		{
 			(*i)++;
-		if (s[*i])
-			rs[(*k)++] = '\x01';
+			rs[(*k)++] = marker;
+		}
 		return (1);
 	}
 	return (0);

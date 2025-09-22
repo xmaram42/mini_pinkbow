@@ -64,6 +64,7 @@ void	free_arg_list(t_arg *list)
 	while (list)
 	{
 		tmp = list->next;
+		free(list->value);
 		free(list);
 		list = tmp;
 	}

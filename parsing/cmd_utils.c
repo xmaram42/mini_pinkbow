@@ -17,7 +17,7 @@ int	copy_argv_to_list(t_arg **list, char **argv)
 
 int	rebuild_argv_from_list(t_cmd *cmd, t_arg *list)
 {
-	free(cmd->argv);
+	free_arr(cmd->argv);
 	cmd->argv = arg_list_to_array(list);
 	return (cmd->argv != NULL);
 }
@@ -42,7 +42,7 @@ int	add_arg_to_cmd(t_cmd *cmd, char *val)
 		free_arg_list(list);
 		return (0);
 	}
-	free_arg_list(list);
+	// free_arg_list(list);
 	return (1);
 }
 

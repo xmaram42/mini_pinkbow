@@ -3,16 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:50:47 by maabdulr          #+#    #+#             */
-/*   Updated: 2025/09/21 16:34:23 by maram            ###   ########.fr       */
+/*   Updated: 2025/09/22 18:44:03 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// 
+
+static void	remove_quote_markers(char *s)
+{
+	size_t	i;
+	size_t	j;
+
+	if (!s)
+		return ;
+	i = 0;
+	j = 0;
+	while (s[i])
+	{
+		if (s[i] != '\x01' && s[i] != '\x02' && s[i] != '\x03')
+			s[j++] = s[i];
+		i++;
+	}
+	s[j] = '\0';
+}
+
 int	do_skip_ctrl(t_exp *x)
 {
 	if (x->s[x->i] == '\x01')
@@ -46,24 +64,23 @@ char	*expand_variables(char *input, t_shell *shell)
 }
 
 
-void expand_token_list(t_token *token, t_shell *shell)
+void	expand_token_list(t_token *token, t_shell *shell)
 {
-    char *expanded;
+	char	*expanded;
 
-    while (token)
-    {
-        if (token->quote != SINGLE_QUOTE)
-        {
-            if (token->type == CMD || token->type == ARG ||
-                token->type == REDIR_IN || token->type == REDIR_OUT ||
-                token->type == REDIR_APPEND || token->type == HEREDOC ||
-                token->type == WORD)
-            { 
-				expanded = expand_variables(token->value, shell);
-                free(token->value);
-                token->value = expanded;
-            }
-        }
-        token = token->next;
-    }
+	while (token)
+	{
+		if (token->quote != SINGLE_QUOTE
+			&& (token->type == CMD || token->type == ARG
+				|| token->type == REDIR_IN || token->type == REDIR_OUT
+				|| token->type == REDIR_APPEND || token->type == HEREDOC
+				|| token->type == WORD))
+		{
+			expanded = expand_variables(token->value, shell);
+			free(token->value);
+			token->value = expanded;
+		}
+		remove_quote_markers(token->value);
+		token = token->next;
+	}
 }

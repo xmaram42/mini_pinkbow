@@ -2,7 +2,7 @@
 
 int	do_singlequote(t_exp *x)
 {
-	if (x->s[x->i] == '\'' && !(x->f & 2))
+	if (x->s[x->i] == '\x02')
 	{
 		x->f ^= 1;
 		x->i += 1;
@@ -13,7 +13,7 @@ int	do_singlequote(t_exp *x)
 
 int	do_doublequote(t_exp *x)
 {
-	if (x->s[x->i] == '"' && !(x->f & 1))
+	if (x->s[x->i] == '\x03')
 	{
 		x->f ^= 2;
 		x->i += 1;
