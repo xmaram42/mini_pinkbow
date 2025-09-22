@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 11:25:15 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/09/19 18:29:21 by maram            ###   ########.fr       */
+/*   Updated: 2025/09/22 18:02:24 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	token_add_back(t_token **token, t_token *new)
 	last->next = new;
 }
 
-static int	is_newline_case(char *line, int i)
+int	is_newline_case(char *line, int i)
 {
 	if (!line[i + 1])
 		return (1);

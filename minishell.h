@@ -6,7 +6,7 @@
 /*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:26:46 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/09/19 18:26:27 by maram            ###   ########.fr       */
+/*   Updated: 2025/09/21 16:35:43 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,6 +177,7 @@ int	validate_syntax(t_token *tokens);
 
 //expansion
 // expand 
+
 int	do_skip_ctrl(t_exp *x);
 char	*expand_variables(char *input, t_shell *shell);
 void expand_token_list(t_token *token, t_shell *shell);

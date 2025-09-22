@@ -1,21 +1,5 @@
 #include "minishell.h"
 
-int	do_backslash(t_exp *x)
-{
-	if (x->s[x->i] == '\\' && !(x->f & 1))
-	{
-		if (x->s[x->i + 1])
-		{
-			x->res = append_char(x->res, x->s[x->i + 1]);
-			x->i += 2;
-		}
-		else
-			x->i += 1;
-		return (1);
-	}
-	return (0);
-}
-
 int	do_singlequote(t_exp *x)
 {
 	if (x->s[x->i] == '\'' && !(x->f & 2))
