@@ -23,14 +23,19 @@ int	check_bang(t_token *c)
 
 int	check_double_pipe(t_token *c)
 {
+	if (c->type != PIPE)
+		return (1);
 	if (c->value && ft_strncmp(c->value, "||", 3) == 0)
 	{
 		if (c->next && c->next->type == PIPE)
 			return (err_pipe());
 		return (err_tok("||"));
 	}
+	if (c->next && c->next->type == PIPE)
+		return (err_pipe());
 	return (1);
 }
+
 
 int	check_redir_rules(t_token *c)
 {

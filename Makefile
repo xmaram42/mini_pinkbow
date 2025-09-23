@@ -11,7 +11,8 @@ SRC         = main.c shell_loop.c parsing/lexer/check.c parsing/lexer/err_syntax
 			  	execution/here_doc/here_doc_ex.c execution/here_doc/here_doc_sig.c execution/here_doc/here_doc_utils.c \
 			  	execution/error.c \
 			  	bultin/pwd.c bultin/env.c bultin/env_utils.c bultin/echo.c \
-              	bultin/cd/cd.c bultin/unset.c bultin/exit.c \
+              	bultin/cd/cd.c bultin/unset.c  \
+				bultin/exit/exit.c bultin/exit/exit_utils.c \
               	bultin/cd/cd_utils.c bultin/export/export.c \
               	bultin/export/export_utils.c bultin/export/export_utils2.c bultin/export/export_extend.c
 

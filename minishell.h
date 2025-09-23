@@ -6,7 +6,7 @@
 /*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:26:46 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/09/23 08:40:42 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/09/23 12:54:28 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -351,7 +351,8 @@ void    init_uid(char ***penvp);
 int             is_numeric_str(char *s);
 long long	    ft_atoll(const char *s);
 unsigned char	normalize_exit_code(long long n);
-int             exec_exit(t_cmd *cmd, t_shell *shell, int interactive);
+int	            exec_exit(t_cmd *cmd, t_shell *shell, int interactive);
+int	is_within_long_long(const char *s);
 
 // unset
 int	    is_valid_identifier(char *s);

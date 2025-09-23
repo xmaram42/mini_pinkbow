@@ -6,43 +6,14 @@
 /*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 12:28:23 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/09/23 08:42:40 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/09/23 12:50:12 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_within_long_long(const char *s)
-{
-	size_t				i;
-	int				sign;
-	unsigned long long	n;
-	unsigned long long	limit;
-	unsigned long long	digit;
 
-	i = 0;
-	sign = 1;
-	n = 0;
-	if (s[i] == '+' || s[i] == '-')
-	{
-		if (s[i] == '-')
-			sign = -1;
-		i++;
-	}
-	if (sign == 1)
-		limit = (unsigned long long)LLONG_MAX;
-	else
-		limit = (unsigned long long)LLONG_MAX + 1ULL;
-	while (s[i] && ft_isdigit((unsigned char)s[i]))
-	{
-		digit = (unsigned long long)(s[i] - '0');
-		if (n > limit / 10 || (n == limit / 10 && digit > limit % 10))
-			return (0);
-		n = (n * 10) + digit;
-		i++;
-	}
-	return (1);
-}
+
 int	is_numeric_str(char *s)
 {
 	int	i;
