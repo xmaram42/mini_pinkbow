@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   run_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 13:23:30 by codespace         #+#    #+#             */
-/*   Updated: 2025/09/13 13:23:33 by codespace        ###   ########.fr       */
+/*   Updated: 2025/09/24 17:10:38 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,3 @@ void	handle_var_cmd(t_cmd *cmd, t_exec *exec, t_shell *shell)
 	}
 	exit_child(exec, exec->cmd_head, 127);
 }
-

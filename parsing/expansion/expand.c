@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:50:47 by maabdulr          #+#    #+#             */
-/*   Updated: 2025/09/22 18:44:03 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/09/24 17:15:00 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 static void	remove_quote_markers(char *s)
 {
@@ -62,7 +61,6 @@ char	*expand_variables(char *input, t_shell *shell)
 	}
 	return (x.res);
 }
-
 
 void	expand_token_list(t_token *token, t_shell *shell)
 {

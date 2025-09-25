@@ -6,7 +6,7 @@
 /*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 17:27:35 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/09/19 20:50:30 by maram            ###   ########.fr       */
+/*   Updated: 2025/09/24 17:23:20 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_token_type	get_token_type(char c, char next, int *len)
 	if (c == '|' && next == '|')
 	{
 		*len = 2;
-		return (PIPE); // We'll use PIPE for || for now, could add LOGICAL_OR type later
+		return (PIPE);
 	}
 	if (c == '<' || c == '>' || c == '|')
 	{
@@ -63,7 +63,7 @@ char	*get_word(char *line, int i, int *len, t_quote_type *quote)
 int	create_token(char *line, int *i, t_token **tok, int *len)
 {
 	t_token_type	type;
-	t_quote_type quote;
+	t_quote_type	quote;
 	char			*val;
 
 	type = get_token_type(line[*i], line[*i + 1], len);
