@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 14:49:26 by codespace         #+#    #+#             */
-/*   Updated: 2025/09/24 18:19:54 by maram            ###   ########.fr       */
+/*   Updated: 2025/09/25 17:55:36 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,21 +60,21 @@ void	free_envp(char **env)
 	free(env);
 }
 
-void	init_uid(char ***penvp)
-{
-	uid_t	uid;
-	char	*uid_str;
-	int		idx;
+// void	init_uid(char ***penvp)
+// {
+// 	uid_t	uid;
+// 	char	*uid_str;
+// 	int		idx;
 
-	if (!penvp || !*penvp)
-		return ;
-	idx = env_index_of(*penvp, "UID");
-	if (idx == -1)
-		return ;
-	uid = getuid();
-	uid_str = ft_itoa(uid);
-	if (!uid_str)
-		return ;
-	env_set(penvp, "UID", uid_str);
-	free(uid_str);
-}
+// 	if (!penvp || !*penvp)
+// 		return ;
+// 	idx = env_index_of(*penvp, "UID");
+// 	if (idx == -1)
+// 		return ;
+// 	uid = getuid();
+// 	uid_str = ft_itoa(uid);
+// 	if (!uid_str)
+// 		return ;
+// 	env_set(penvp, "UID", uid_str);
+// 	free(uid_str);
+// }

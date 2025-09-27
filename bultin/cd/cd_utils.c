@@ -6,7 +6,7 @@
 /*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 17:57:06 by maram             #+#    #+#             */
-/*   Updated: 2025/09/24 14:20:12 by maram            ###   ########.fr       */
+/*   Updated: 2025/09/26 18:05:30 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,4 +80,14 @@ void	cd_perror(char *path)
 	}
 	else
 		perror("minishell: cd");
+}
+
+char	*dup_env_pwd(t_shell *shell)
+{
+	char	*pwd;
+
+	pwd = get_env_value("PWD", shell);
+	if (!pwd)
+		return (NULL);
+	return (ft_strdup(pwd));
 }

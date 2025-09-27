@@ -6,7 +6,7 @@
 /*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 13:54:17 by maabdulr          #+#    #+#             */
-/*   Updated: 2025/09/24 14:21:36 by maram            ###   ########.fr       */
+/*   Updated: 2025/09/26 18:29:25 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,31 +84,4 @@ void	set_logical_pwd(char **av, char *target_dir, char *newpwd,
 		update_env_var("PWD", target_dir, shell);
 	else
 		update_env_var("PWD", newpwd, shell);
-}
-
-int	exec_cd(char **av, t_shell *shell)
-{
-	char	*target_dir;
-	char	*oldpwd;
-	char	*newpwd;
-	char	*alloc;
-	int		print_newpwd;
-
-	oldpwd = getcwd(NULL, 0);
-	if (!oldpwd)
-		return (perror("minishell: cd: getcwd"), 1);
-	target_dir = resolve_target(av, shell, &print_newpwd, &alloc);
-	if (!target_dir)
-		return (free(oldpwd), 1);
-	if (chdir(target_dir) != 0)
-		return (cd_perror(target_dir), free(oldpwd), free(alloc), 1);
-	newpwd = getcwd(NULL, 0);
-	if (!newpwd)
-		return (update_env_var("OLDPWD", oldpwd, shell),
-			perror("minishell: cd: getcwd"), free(oldpwd), free(alloc), 1);
-	set_logical_pwd(av, target_dir, newpwd, shell);
-	update_env_var("OLDPWD", oldpwd, shell);
-	if (print_newpwd)
-		ft_putendl_fd(newpwd, STDOUT_FILENO);
-	return (free(oldpwd), free(newpwd), free(alloc), 0);
 }

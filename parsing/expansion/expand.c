@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:50:47 by maabdulr          #+#    #+#             */
-/*   Updated: 2025/09/24 17:15:00 by maram            ###   ########.fr       */
+/*   Updated: 2025/09/25 17:10:59 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,15 @@ char	*expand_variables(char *input, t_shell *shell)
 
 void	expand_token_list(t_token *token, t_shell *shell)
 {
+	t_token	*prev;
 	char	*expanded;
+	int		is_limiter;
 
+	prev = NULL;
 	while (token)
 	{
-		if (token->quote != SINGLE_QUOTE
+		is_limiter = (prev && prev->type == HEREDOC);
+		if (!is_limiter && token->quote != SINGLE_QUOTE
 			&& (token->type == CMD || token->type == ARG
 				|| token->type == REDIR_IN || token->type == REDIR_OUT
 				|| token->type == REDIR_APPEND || token->type == HEREDOC
@@ -79,6 +83,7 @@ void	expand_token_list(t_token *token, t_shell *shell)
 			token->value = expanded;
 		}
 		remove_quote_markers(token->value);
+		prev = token;
 		token = token->next;
 	}
 }

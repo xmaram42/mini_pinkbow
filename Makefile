@@ -1,6 +1,6 @@
 NAME        = minishell
 
-SRC         = main.c shell_loop.c parsing/lexer/check.c parsing/lexer/err_syntax.c  \
+SRC         = main.c shell_loop.c parsing/lexer/check.c parsing/lexer/err_syntax.c  parsing/lexer/lexer_utils2.c\
 				parsing/lexer/handle_quote.c parsing/lexer/lexer_utils.c parsing/lexer/lexer.c \
 				parsing/lexer/quote_utils.c parsing/lexer/validate_syntax.c parsing/clean.c parsing/cmd_args.c parsing/signal.c \
 				parsing/here_doc.c parsing/parsing.c parsing/redirect.c parsing/set_token.c  parsing/cmd_utils.c parsing/redirect_utils.c\
@@ -12,11 +12,10 @@ SRC         = main.c shell_loop.c parsing/lexer/check.c parsing/lexer/err_syntax
 			  	execution/error.c \
 				bultin/env/env.c bultin/env/env_utils.c bultin/env/env_utils2.c \
 			  	bultin/pwd.c  bultin/echo.c \
-              	bultin/cd/cd.c bultin/unset.c  \
+              	bultin/cd/cd.c bultin/unset.c  bultin/cd/cd_utils2.c\
 				bultin/exit/exit.c bultin/exit/exit_utils.c \
               	bultin/cd/cd_utils.c bultin/export/export.c \
               	bultin/export/export_utils.c bultin/export/export_utils2.c bultin/export/export_extend.c
-
 
 
 OBJ         = $(SRC:.c=.o)

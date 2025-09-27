@@ -6,7 +6,7 @@
 /*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 17:27:35 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/09/24 17:23:20 by maram            ###   ########.fr       */
+/*   Updated: 2025/09/26 18:12:07 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ char	*get_word(char *line, int i, int *len, t_quote_type *quote)
 	raw = ft_substr(line, i, *len);
 	if (!raw)
 		return (NULL);
+	*quote = determine_quote_type(raw);
 	word = handle_complex_quotes(raw);
 	free(raw);
 	return (word);
@@ -124,7 +125,7 @@ void	tokens(char *line, t_token **head, t_shell *shell)
 	}
 	if (*head && !validate_syntax(*head))
 	{
-		shell->exit_code = 2;
+		shell->exit_code = 258;
 		free_tokens(*head);
 		*head = NULL;
 	}
