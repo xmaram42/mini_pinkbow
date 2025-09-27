@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 17:55:27 by maram             #+#    #+#             */
-/*   Updated: 2025/09/24 17:56:24 by maram            ###   ########.fr       */
+/*   Updated: 2025/09/27 12:16:28 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,6 @@ int	open_read_fd(t_cmd *cmd, const char *filename)
 	if (cmd->infile == -1)
 	{
 		errno_msg(filename);
-		cmd->redir_error = 1;
-		return (0);
-	}
-	if (fcntl(cmd->infile, F_SETFD, FD_CLOEXEC) == -1)
-	{
-		errno_msg("fcntl");
-		close(cmd->infile);
-		cmd->infile = -1;
 		cmd->redir_error = 1;
 		return (0);
 	}
@@ -90,14 +82,6 @@ int	open_append_fd(t_cmd *cmd, const char *filename)
 	if (cmd->outfile == -1)
 	{
 		errno_msg(filename);
-		cmd->redir_error = 1;
-		return (0);
-	}
-	if (fcntl(cmd->outfile, F_SETFD, FD_CLOEXEC) == -1)
-	{
-		errno_msg("fcntl");
-		close(cmd->outfile);
-		cmd->outfile = -1;
 		cmd->redir_error = 1;
 		return (0);
 	}

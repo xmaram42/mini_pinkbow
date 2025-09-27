@@ -39,35 +39,33 @@ DEL         = rm -rf
 ART_FILE = art/bow.txt
 
 # Hide command output
-.SILENT:
-
 all: $(NAME)
-	echo ""
-	echo "$(PINK)"
-	cat $(ART_FILE) || true
-	echo "$(RESET)"
 
 $(NAME): $(LIBFT) $(OBJ)
-	echo "$(GREEN)Linking minishell...$(RESET)"
-	$(CC) $(FLAGS) -o $(NAME) $(OBJ) $(rl_FLAGS) $(LIBFT)
+	@echo ""
+	@echo "$(PINK)"
+	@cat $(ART_FILE) || true
+	@echo "$(RESET)"
+	@echo "$(GREEN)Linking minishell...$(RESET)"
+	@$(CC) $(FLAGS) -o $(NAME) $(OBJ) $(rl_FLAGS) $(LIBFT)
 
 %.o: %.c
-	echo "$(BLUE)Compiling $<...$(RESET)"
-	$(CC) $(FLAGS) $(LIBFT_INC) -c $< -o $@
+	@echo "$(BLUE)Compiling $<...$(RESET)"
+	@$(CC) $(FLAGS) $(LIBFT_INC) -c $< -o $@
 
 $(LIBFT):
-	$(MAKE) -s -C $(LIBFT_DIR)
+	@$(MAKE) -s -C $(LIBFT_DIR)
 
 clean:
-	echo "$(BLUE)Cleaning object files...$(RESET)"
-	$(DEL) $(OBJ)
-	$(MAKE) -s clean -C $(LIBFT_DIR)
+	@echo "$(BLUE)Cleaning object files...$(RESET)"
+	@$(DEL) $(OBJ)
+	@$(MAKE) -s clean -C $(LIBFT_DIR)
 
 fclean: clean
-	echo "$(BLUE)Cleaning executable...$(RESET)"
-	$(DEL) $(NAME)
-	$(MAKE) -s fclean -C $(LIBFT_DIR)
+	@echo "$(BLUE)Cleaning executable...$(RESET)"
+	@$(DEL) $(NAME)
+	@$(MAKE) -s fclean -C $(LIBFT_DIR)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: clean fclean re
