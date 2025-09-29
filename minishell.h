@@ -6,7 +6,7 @@
 /*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:26:46 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/09/27 11:55:52 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/09/27 16:58:52 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,7 @@ int				handle_plain_quote(const char *s, int *i, char *rs, int *k);
 int				handle_backslash(const char *s, int *i, char *rs, int *k);
 char			*handle_complex_quotes(const char *s);
 //lexer_utils
+int				has_unclosed_quote(char *line, t_shell *sh);
 t_token			*new_token(char *token, t_token_type type, t_quote_type quote);
 void			token_add_back(t_token **token, t_token *new);
 void			build_token(char *line, int i, char token[3]);

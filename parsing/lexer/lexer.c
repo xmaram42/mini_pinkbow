@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 17:27:35 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/09/26 18:12:07 by maram            ###   ########.fr       */
+/*   Updated: 2025/09/27 16:53:24 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ void	tokens(char *line, t_token **head, t_shell *shell)
 {
 	int	i;
 
+	if (has_unclosed_quote(line, shell))
+		return ;
 	i = 0;
 	while (line[i])
 	{

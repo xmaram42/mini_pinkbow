@@ -1,7 +1,7 @@
 NAME        = minishell
 
 SRC         = main.c shell_loop.c parsing/lexer/check.c parsing/lexer/err_syntax.c  parsing/lexer/lexer_utils2.c\
-				parsing/lexer/handle_quote.c parsing/lexer/lexer_utils.c parsing/lexer/lexer.c \
+				parsing/lexer/handle_quote.c parsing/lexer/lexer_utils.c parsing/lexer/lexer_utils3.c parsing/lexer/lexer.c \
 				parsing/lexer/quote_utils.c parsing/lexer/validate_syntax.c parsing/clean.c parsing/cmd_args.c parsing/signal.c \
 				parsing/here_doc.c parsing/parsing.c parsing/redirect.c parsing/set_token.c  parsing/cmd_utils.c parsing/redirect_utils.c\
 				parsing/expansion/expand.c parsing/expansion/expand_utils.c parsing/expansion/expand_var.c \
