@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:51:20 by maabdulr          #+#    #+#             */
-/*   Updated: 2025/09/24 16:33:20 by maram            ###   ########.fr       */
+/*   Updated: 2025/10/02 10:02:21 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	exec_builtin_in_child(t_cmd *cmd, t_shell *shell)
 	if (ft_strncmp(cmd->argv[0], "echo", 5) == 0)
 		return (exec_echo(cmd->argv));
 	if (ft_strncmp(cmd->argv[0], "pwd", 4) == 0)
-		return (exec_pwd(cmd->argv));
+		return (exec_pwd(cmd->argv, shell));
 	if (ft_strncmp(cmd->argv[0], "env", 4) == 0)
 		return (exec_env(cmd->argv, shell));
 	if (ft_strncmp(cmd->argv[0], "export", 7) == 0)

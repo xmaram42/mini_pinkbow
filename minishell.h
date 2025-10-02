@@ -6,7 +6,7 @@
 /*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:26:46 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/09/27 16:58:52 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/10/02 10:04:04 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,7 +329,7 @@ void			exit_child(t_exec *exec, t_cmd *cmd_list, int exit_code);
 int				exec_echo(char **av);
 
 //pwd		
-int				exec_pwd(char **av);
+int				exec_pwd(char **av, t_shell *shell);
 
 // env		
 int				exec_env(char **av, t_shell *shell);
@@ -339,7 +339,6 @@ char			*get_env_value(char *name, t_shell *shell);
 int				env_count(char **env);
 void			free_envp(char **env);
 void			init_shlvl(char ***penvp);
-// void			init_uid(char ***penvp);
 
 //------PARENT------------
 // exit
