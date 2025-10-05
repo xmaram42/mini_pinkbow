@@ -6,7 +6,7 @@
 /*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 17:23:27 by maram             #+#    #+#             */
-/*   Updated: 2025/09/24 17:23:40 by maram            ###   ########.fr       */
+/*   Updated: 2025/10/05 16:53:54 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,28 @@ void	skip_dollar_quote(char *line, int i, int *j)
 		(*j)++;
 }
 
+static void	skip_command_substitution(char *line, int i, int *j)
+{
+	int	depth;
+
+	depth = 1;
+	*j += 2;
+	while (line[i + *j] && depth > 0)
+	{
+		if (line[i + *j] == '\\' && line[i + *j + 1])
+			*j += 2;
+		else if (line[i + *j] == '\'' || line[i + *j] == '\"')
+			skip_quoted(line, i, j, line[i + *j]);
+		else
+		{
+			if (line[i + *j] == '(')
+				depth++;
+			else if (line[i + *j] == ')')
+				depth--;
+			(*j)++;
+		}
+	}
+}
 int	scan_complex_word_length(char *line, int i)
 {
 	int	j;
@@ -48,6 +70,8 @@ int	scan_complex_word_length(char *line, int i)
 		if (line[i + j] == '$'
 			&& (line[i + j + 1] == '\'' || line[i + j + 1] == '"'))
 			skip_dollar_quote(line, i, &j);
+		else if (line[i + j] == '$' && line[i + j + 1] == '(')
+			skip_command_substitution(line, i, &j);
 		else if (line[i + j] == '\'' || line[i + j] == '"')
 			skip_quoted(line, i, &j, line[i + j]);
 		else

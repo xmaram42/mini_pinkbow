@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:26:46 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/10/02 10:04:04 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/10/04 18:52:04 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -339,6 +339,7 @@ char			*get_env_value(char *name, t_shell *shell);
 int				env_count(char **env);
 void			free_envp(char **env);
 void			init_shlvl(char ***penvp);
+// void			init_uid(char ***penvp);
 
 //------PARENT------------
 // exit
