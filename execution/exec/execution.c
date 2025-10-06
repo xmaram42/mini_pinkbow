@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:51:20 by maabdulr          #+#    #+#             */
-/*   Updated: 2025/10/04 18:51:27 by maram            ###   ########.fr       */
+/*   Updated: 2025/10/06 16:28:32 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	exec_builtin_in_child(t_cmd *cmd, t_shell *shell)
 	if (ft_strncmp(cmd->argv[0], "echo", 5) == 0)
 		return (exec_echo(cmd->argv));
 	if (ft_strncmp(cmd->argv[0], "pwd", 4) == 0)
-		return (exec_pwd(cmd->argv, shell));
+		return (exec_pwd(cmd->argv));
 	if (ft_strncmp(cmd->argv[0], "env", 4) == 0)
 		return (exec_env(cmd->argv, shell));
 	if (ft_strncmp(cmd->argv[0], "export", 7) == 0)
@@ -64,7 +64,11 @@ void	wait_all_children(t_exec *exec, t_shell *shell)
 				if (WIFEXITED(st))
 					shell->exit_code = WEXITSTATUS(st);
 				else if (WIFSIGNALED(st))
+				{
+					if (WTERMSIG(st) == SIGQUIT)
+						ft_putstr_fd("Quit: 3\n", STDERR_FILENO);
 					shell->exit_code = 128 + WTERMSIG(st);
+				}
 			}
 		}
 		i++;

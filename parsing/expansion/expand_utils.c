@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:50:52 by maabdulr          #+#    #+#             */
-/*   Updated: 2025/09/24 17:14:45 by maram            ###   ########.fr       */
+/*   Updated: 2025/10/06 16:30:11 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,13 @@ int	after_redir(t_token *prev, t_token *curr, t_shell *sh)
 		return (0);
 	if (ft_strchr(curr->value, ' ') || ft_strchr(curr->value, '\t'))
 	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(curr->value, 2);
-		ft_putendl_fd(": ambiguous redirect", 2);
+		if (!curr->ambiguous)
+		{
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(curr->value, 2);
+			ft_putendl_fd(": ambiguous redirect", 2);
+			curr->ambiguous = 1;
+		}
 		sh->exit_code = 1;
 		return (1);
 	}
@@ -57,14 +61,19 @@ int	handle_empty_token(t_token **head, t_token **prev,
 {
 	t_token	*tmp;
 
-	if (!(*curr)->value || (*curr)->value[0] != '\0'
-		|| (*curr)->quote != NO_QUOTE)
+	if (!(*curr)->value || (*curr)->value[0] || (*curr)->quote != NO_QUOTE)
 		return (0);
 	if (*prev && is_redir((*prev)->type))
 	{
-		ft_putstr_fd("minishell: ambiguous redirect\n", 2);
+		if (!(*curr)->ambiguous)
+		{
+			ft_putstr_fd("minishell: ambiguous redirect\n", 2);
+			(*curr)->ambiguous = 1;
+		}
 		sh->exit_code = 1;
-		return (-1);
+		*prev = *curr;
+		*curr = (*curr)->next;
+		return (2);
 	}
 	tmp = *curr;
 	if (*prev)
@@ -88,12 +97,16 @@ int	remove_empty_tokens(t_token **head, t_shell *sh)
 	while (c)
 	{
 		r = handle_empty_token(head, &p, &c, sh);
-		if (r < 0)
-			return (1);
-		if (r > 0)
+		if (r == 1)
+			continue ;
+		if (r == 2)
 			continue ;
 		if (c->quote == NO_QUOTE && c->value && after_redir(p, c, sh))
-			return (1);
+		{
+			p = c;
+			c = c->next;
+			continue ;
+		}
 		p = c;
 		c = c->next;
 	}

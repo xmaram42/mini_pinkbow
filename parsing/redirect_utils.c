@@ -6,17 +6,11 @@
 /*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 17:55:27 by maram             #+#    #+#             */
-/*   Updated: 2025/09/27 12:16:28 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/10/06 16:35:46 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	errno_msg(const char *s)
-{
-	ft_putstr_fd("minishell: ", 2);
-	perror(s);
-}
 
 int	open_read_fd(t_cmd *cmd, const char *filename)
 {
@@ -39,38 +33,65 @@ void	handle_redir_in(t_cmd *cmd, t_token **token_ptr)
 	if (!*token_ptr || !(*token_ptr)->next)
 		return ;
 	*token_ptr = (*token_ptr)->next;
+	if ((*token_ptr)->ambiguous)
+	{
+		cmd->redir_error = 1;
+		*token_ptr = (*token_ptr)->next;
+		return ;
+	}
 	filename = ft_strdup((*token_ptr)->value);
 	if (!filename)
 	{
 		cmd->redir_error = 1;
 		return ;
 	}
-	open_read_fd(cmd, filename);
+	if (!open_read_fd(cmd, filename))
+	{
+		free(filename);
+		*token_ptr = (*token_ptr)->next;
+		return ;
+	}
 	free(filename);
 	*token_ptr = (*token_ptr)->next;
 }
 
-void	handle_redir_out(t_cmd *cmd, t_token **token_ptr)
+static int	open_outfile(t_cmd *cmd, char *file)
 {
-	char	*filename;
-
-	if (!(*token_ptr) || !(*token_ptr)->next)
-		return ;
-	*token_ptr = (*token_ptr)->next;
-	filename = ft_strdup((*token_ptr)->value);
-	if (!filename)
-		return ;
 	if (cmd->outfile != -1)
 		close(cmd->outfile);
-	cmd->outfile = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	cmd->outfile = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (cmd->outfile == -1)
 	{
 		ft_putstr_fd("minishell: ", 2);
-		perror(filename);
+		perror(file);
 		cmd->redir_error = 1;
+		return (0);
 	}
+	return (1);
+}
+
+void	handle_redir_out(t_cmd *cmd, t_token **tok)
+{
+	char	*filename;
+
+	if (!(*tok) || !(*tok)->next)
+		return ;
+	*tok = (*tok)->next;
+	if ((*tok)->ambiguous)
+	{
+		cmd->redir_error = 1;
+		*tok = (*tok)->next;
+		return ;
+	}
+	filename = ft_strdup((*tok)->value);
+	if (!filename)
+	{
+		cmd->redir_error = 1;
+		return ;
+	}
+	open_outfile(cmd, filename);
 	free(filename);
-	*token_ptr = (*token_ptr)->next;
+	*tok = (*tok)->next;
 }
 
 int	open_append_fd(t_cmd *cmd, const char *filename)

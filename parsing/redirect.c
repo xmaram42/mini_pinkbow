@@ -3,34 +3,58 @@
 /*                                                        :::      ::::::::   */
 /*   redirect.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
+/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 17:44:19 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/09/24 17:56:54 by maram            ###   ########.fr       */
+/*   Updated: 2025/10/06 16:34:07 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_redir_append(t_cmd *cmd, t_token **token_ptr)
+void	errno_msg(const char *s)
+{
+	ft_putstr_fd("minishell: ", 2);
+	perror(s);
+}
+
+static int	validate_redir_target(t_cmd *cmd, t_token **tok)
+{
+	if (!*tok || !(*tok)->next)
+	{
+		cmd->redir_error = 1;
+		return (0);
+	}
+	*tok = (*tok)->next;
+	if ((*tok)->ambiguous)
+	{
+		cmd->redir_error = 1;
+		*tok = (*tok)->next;
+		return (0);
+	}
+	return (1);
+}
+
+void	handle_redir_append(t_cmd *cmd, t_token **tok)
 {
 	char	*filename;
 
-	if (!*token_ptr || !(*token_ptr)->next)
-	{
-		cmd->redir_error = 1;
+	if (!validate_redir_target(cmd, tok))
 		return ;
-	}
-	*token_ptr = (*token_ptr)->next;
-	filename = ft_strdup((*token_ptr)->value);
+	filename = ft_strdup((*tok)->value);
 	if (!filename)
 	{
 		cmd->redir_error = 1;
 		return ;
 	}
-	open_append_fd(cmd, filename);
+	if (!open_append_fd(cmd, filename))
+	{
+		free(filename);
+		*tok = (*tok)->next;
+		return ;
+	}
 	free(filename);
-	*token_ptr = (*token_ptr)->next;
+	*tok = (*tok)->next;
 }
 
 void	handle_redirection(t_cmd *cmd, t_token **token_ptr)
