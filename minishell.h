@@ -6,7 +6,7 @@
 /*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:26:46 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/10/07 16:11:32 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/10/07 16:46:07 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,13 +218,12 @@ void			free_heredoc_list(t_heredoc_node *list);
 //redirct
 void			handle_redir_append(t_cmd *cmd, t_token **token_ptr);
 void			handle_redirection(t_cmd *cmd, t_token **token_ptr);
-void			errno_msg(const char *s);
-
-// redirct_utils
-int				open_read_fd(t_cmd *cmd, const char *filename);
-void			handle_redir_in(t_cmd *cmd, t_token **token);
-void			handle_redir_out(t_cmd *cmd, t_token **token_ptr);
 void			report_ambiguous_redirect(t_token *token);
+// redirct_utils
+void			errno_msg(const char *s);
+int				open_read_fd(t_cmd *cmd, const char *filename);
+void			handle_redir_in(t_cmd *cmd, t_token **token_ptr);
+void			handle_redir_out(t_cmd *cmd, t_token **token_ptr);
 int				open_append_fd(t_cmd *cmd, const char *filename);
 
 //cmd_args
@@ -341,6 +340,7 @@ char			*get_env_value(char *name, t_shell *shell);
 int				env_count(char **env);
 void			free_envp(char **env);
 void			init_shlvl(char ***penvp);
+// void			init_uid(char ***penvp);
 
 //------PARENT------------
 // exit

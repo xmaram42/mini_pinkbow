@@ -6,7 +6,7 @@
 /*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:50:52 by maabdulr          #+#    #+#             */
-/*   Updated: 2025/10/06 18:32:49 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/10/07 16:41:55 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,13 @@ int	after_redir(t_token *prev, t_token *curr, t_shell *sh)
 		return (0);
 	if (ft_strchr(curr->value, ' ') || ft_strchr(curr->value, '\t'))
 	{
-		curr->ambiguous = 1;
+		if (!curr->ambiguous)
+		{
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(curr->value, 2);
+			ft_putendl_fd(": ambiguous redirect", 2);
+			curr->ambiguous = 1;
+		}
 		sh->exit_code = 1;
 		return (1);
 	}
@@ -51,7 +57,7 @@ int	after_redir(t_token *prev, t_token *curr, t_shell *sh)
 }
 
 int	handle_empty_token(t_token **head, t_token **prev,
-				t_token **curr, t_shell *sh)
+	t_token **curr, t_shell *sh)
 {
 	t_token	*tmp;
 
