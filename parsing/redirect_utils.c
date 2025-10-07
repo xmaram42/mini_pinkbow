@@ -6,7 +6,7 @@
 /*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 17:55:27 by maram             #+#    #+#             */
-/*   Updated: 2025/10/06 16:35:46 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/10/07 13:37:56 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,33 +26,31 @@ int	open_read_fd(t_cmd *cmd, const char *filename)
 	return (1);
 }
 
-void	handle_redir_in(t_cmd *cmd, t_token **token_ptr)
+void	handle_redir_in(t_cmd *cmd, t_token **token)
 {
 	char	*filename;
 
-	if (!*token_ptr || !(*token_ptr)->next)
+	if (!*token || !(*token)->next)
 		return ;
-	*token_ptr = (*token_ptr)->next;
-	if ((*token_ptr)->ambiguous)
+	*token = (*token)->next;
+	if ((*token)->ambiguous)
 	{
+		report_ambiguous_redirect(*token);
 		cmd->redir_error = 1;
-		*token_ptr = (*token_ptr)->next;
+		*token = (*token)->next;
 		return ;
 	}
-	filename = ft_strdup((*token_ptr)->value);
+	filename = ft_strdup((*token)->value);
 	if (!filename)
-	{
-		cmd->redir_error = 1;
-		return ;
-	}
+		return ((void)(cmd->redir_error = 1));
 	if (!open_read_fd(cmd, filename))
 	{
 		free(filename);
-		*token_ptr = (*token_ptr)->next;
+		*token = (*token)->next;
 		return ;
 	}
 	free(filename);
-	*token_ptr = (*token_ptr)->next;
+	*token = (*token)->next;
 }
 
 static int	open_outfile(t_cmd *cmd, char *file)
@@ -79,6 +77,7 @@ void	handle_redir_out(t_cmd *cmd, t_token **tok)
 	*tok = (*tok)->next;
 	if ((*tok)->ambiguous)
 	{
+		report_ambiguous_redirect(*tok);
 		cmd->redir_error = 1;
 		*tok = (*tok)->next;
 		return ;

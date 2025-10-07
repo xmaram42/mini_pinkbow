@@ -6,7 +6,7 @@
 /*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 17:44:19 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/10/06 16:34:07 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/10/07 13:38:19 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ static int	validate_redir_target(t_cmd *cmd, t_token **tok)
 	*tok = (*tok)->next;
 	if ((*tok)->ambiguous)
 	{
+		report_ambiguous_redirect(*tok);
 		cmd->redir_error = 1;
 		*tok = (*tok)->next;
 		return (0);
@@ -82,4 +83,18 @@ void	handle_redirection(t_cmd *cmd, t_token **token_ptr)
 		while (*token_ptr && (*token_ptr)->type != PIPE)
 			*token_ptr = (*token_ptr)->next;
 	}
+}
+
+void	report_ambiguous_redirect(t_token *token)
+{
+	if (!token)
+		return ;
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	if (token->value && token->value[0])
+	{
+		ft_putstr_fd(token->value, STDERR_FILENO);
+		ft_putendl_fd(": ambiguous redirect", STDERR_FILENO);
+	}
+	else
+		ft_putendl_fd("ambiguous redirect", STDERR_FILENO);
 }
