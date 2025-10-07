@@ -6,7 +6,7 @@
 /*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:50:47 by maabdulr          #+#    #+#             */
-/*   Updated: 2025/09/25 17:10:59 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/10/07 17:20:39 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,18 +72,38 @@ void	expand_token_list(t_token *token, t_shell *shell)
 	while (token)
 	{
 		is_limiter = (prev && prev->type == HEREDOC);
-		if (!is_limiter && token->quote != SINGLE_QUOTE
-			&& (token->type == CMD || token->type == ARG
-				|| token->type == REDIR_IN || token->type == REDIR_OUT
-				|| token->type == REDIR_APPEND || token->type == HEREDOC
-				|| token->type == WORD))
-		{
-			expanded = expand_variables(token->value, shell);
-			free(token->value);
-			token->value = expanded;
-		}
-		remove_quote_markers(token->value);
-		prev = token;
-		token = token->next;
-	}
+                if (!is_limiter && token->quote != SINGLE_QUOTE
+                        && (token->type == CMD || token->type == ARG
+                                || token->type == REDIR_IN || token->type == REDIR_OUT
+                                || token->type == REDIR_APPEND || token->type == HEREDOC
+                                || token->type == WORD))
+                {
+                        char    *original;
+
+                        original = token->value;
+                        expanded = expand_variables(token->value, shell);
+                        if (!expanded)
+                        {
+                                free(original);
+                                token->value = NULL;
+                        }
+                        else if (prev && is_redir(prev->type)
+                                && token->quote == NO_QUOTE && expanded[0] == '\0')
+                        {
+                                token->ambiguous = 1;
+                                shell->exit_code = 1;
+                                free(expanded);
+                                token->value = original;
+                        }
+                        else
+                        {
+                                free(original);
+                                token->value = expanded;
+                        }
+                }
+                if (token->value)
+                        remove_quote_markers(token->value);
+                prev = token;
+                token = token->next;
+        }
 }

@@ -6,7 +6,7 @@
 /*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 17:55:27 by maram             #+#    #+#             */
-/*   Updated: 2025/10/07 16:44:14 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/10/07 17:21:13 by maabdulr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,13 @@ void	handle_redir_in(t_cmd *cmd, t_token **token_ptr)
 	if (!*token_ptr || !(*token_ptr)->next)
 		return ;
 	*token_ptr = (*token_ptr)->next;
-	if ((*token_ptr)->ambiguous)
-	{
-		cmd->redir_error = 1;
-		*token_ptr = (*token_ptr)->next;
-		return ;
-	}
+        if ((*token_ptr)->ambiguous)
+        {
+                report_ambiguous_redirect(*token_ptr);
+                cmd->redir_error = 1;
+                *token_ptr = (*token_ptr)->next;
+                return ;
+        }
 	filename = ft_strdup((*token_ptr)->value);
 	if (!filename)
 	{
