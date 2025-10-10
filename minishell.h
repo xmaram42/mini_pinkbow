@@ -6,7 +6,7 @@
 /*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 14:26:46 by ashaheen          #+#    #+#             */
-/*   Updated: 2025/10/08 15:53:42 by maram            ###   ########.fr       */
+/*   Updated: 2025/10/10 18:18:52 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -330,8 +330,7 @@ void			exit_child(t_exec *exec, t_cmd *cmd_list, int exit_code);
 int				exec_echo(char **av);
 
 //pwd		
-int				exec_pwd(char **av);
-
+int				exec_pwd(char **av, t_shell *shell);
 // env		
 int				exec_env(char **av, t_shell *shell);
 char			*get_env_value(char *name, t_shell *shell);
