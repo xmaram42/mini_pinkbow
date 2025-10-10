@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maabdulr <maabdulr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: maram <maram@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 17:55:27 by maram             #+#    #+#             */
-/*   Updated: 2025/10/07 17:21:13 by maabdulr         ###   ########.fr       */
+/*   Updated: 2025/10/08 15:53:09 by maram            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,34 +26,31 @@ int	open_read_fd(t_cmd *cmd, const char *filename)
 	return (1);
 }
 
-void	handle_redir_in(t_cmd *cmd, t_token **token_ptr)
+void	handle_redir_in(t_cmd *cmd, t_token **token)
 {
 	char	*filename;
 
-	if (!*token_ptr || !(*token_ptr)->next)
+	if (!*token || !(*token)->next)
 		return ;
-	*token_ptr = (*token_ptr)->next;
-        if ((*token_ptr)->ambiguous)
-        {
-                report_ambiguous_redirect(*token_ptr);
-                cmd->redir_error = 1;
-                *token_ptr = (*token_ptr)->next;
-                return ;
-        }
-	filename = ft_strdup((*token_ptr)->value);
-	if (!filename)
+	*token = (*token)->next;
+	if ((*token)->ambiguous)
 	{
+		report_ambiguous_redirect(*token);
 		cmd->redir_error = 1;
+		*token = (*token)->next;
 		return ;
 	}
+	filename = ft_strdup((*token)->value);
+	if (!filename)
+		return ((void)(cmd->redir_error = 1));
 	if (!open_read_fd(cmd, filename))
 	{
 		free(filename);
-		*token_ptr = (*token_ptr)->next;
+		*token = (*token)->next;
 		return ;
 	}
 	free(filename);
-	*token_ptr = (*token_ptr)->next;
+	*token = (*token)->next;
 }
 
 static int	open_outfile(t_cmd *cmd, char *file)
